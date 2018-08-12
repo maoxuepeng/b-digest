@@ -9,7 +9,7 @@ tags: windows1709 docker SQLServer 中文字符集
 
 下面是参考[SQLServer官方Dockerfile](https://github.com/Microsoft/mssql-docker/blob/master/windows/mssql-server-windows-developer/dockerfile)修改后的Dockerfile
 
-```
+```docker
 FROM microsoft/windowsservercore
 LABEL maintainer "Perry Skountrianos"
 
