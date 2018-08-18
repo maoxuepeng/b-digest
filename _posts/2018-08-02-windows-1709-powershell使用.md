@@ -54,6 +54,7 @@ Display Name                                            Name                    
 ```
 
 ## 配置ftp
+
 ```
 PS C:\suda\sdtestservice> get-windowsfeature *ftp*
 
@@ -88,31 +89,23 @@ PS C:\suda\sdtestservice> set-itemproperty "iis:\sites\suda" -name ftpserver.sec
 PS C:\suda\sdtestservice> set-itemproperty "iis:\sites\suda" -name ftpserver.userisolation.mode -value 3
 PS C:\suda\sdtestservice> set-itemproperty "iis:\sites\suda" -name ftpserver.security.userisolation. -value $true
 set-itemproperty : 在 \\ECS-SUDA\Sites\suda 上找不到属性 ftpserver.security.userisolation.。
-参数名: propName
-所在位置 行:1 字符: 1
-+ set-itemproperty "iis:\sites\suda" -name ftpserver.security.userisola ...
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : InvalidArgument: (:) [Set-ItemProperty]，ArgumentException
-    + FullyQualifiedErrorId : InvalidArgument,Microsoft.PowerShell.Commands.SetItemPropertyCommand
 
 PS C:\suda\sdtestservice> set-itemproperty "iis:\sites\suda" -name ftpserver.security.userisolation -value $true
-set-itemproperty : 在 \\ECS-SUDA\Sites\suda 上找不到属性 ftpserver.security.userisolation。
-参数名: propName
-所在位置 行:1 字符: 1
-+ set-itemproperty "iis:\sites\suda" -name ftpserver.security.userisola ...
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : InvalidArgument: (:) [Set-ItemProperty]，ArgumentException
-    + FullyQualifiedErrorId : InvalidArgument,Microsoft.PowerShell.Commands.SetItemPropertyCommand
 
-PS C:\suda\sdtestservice> set-itemproperty "iis:\sites\suda" -name ftpserver.security.userisolation -value $true^C
 PS C:\suda\sdtestservice> add-webconfiguration "/system.ftpserver/security/authorization" -value @{accesstype="Allow";roles="";permissions="Read,Write";users
 ="*"} -pspath iis:\ -location "suda"
 PS C:\suda\sdtestservice> restart-webitem "iis:\sites\suda"
 ```
+
 ### 启用telnet客户端
+
 ```
 install-windowsfeature Telnet-Client
 ```
+
+### 压缩与解压
+```compress-archive```
+```extract-archive```
 
 ## 华为云windows容器镜像
 swr.cn-north-1.myhuaweicloud.com/microsoft/mssql-server-windows-developer:1709
