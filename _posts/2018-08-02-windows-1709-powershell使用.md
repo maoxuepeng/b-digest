@@ -104,7 +104,9 @@ install-windowsfeature Telnet-Client
 ```
 
 ### 压缩与解压
+
 ```compress-archive```
+
 ```extract-archive```
 
 ### 通过 Set-Processmitigation 命令关闭 DEP (Data Execution Prevention)
@@ -215,5 +217,8 @@ DEP:
 swr.cn-north-1.myhuaweicloud.com/microsoft/mssql-server-windows-developer:1709
 
 ## nds配置
+### 查看DNS配置
 Get-DnsClientServerAddress
+
+### 设置DNS解析
 Set-DnsClientServerAddress
