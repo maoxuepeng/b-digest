@@ -105,9 +105,9 @@ install-windowsfeature Telnet-Client
 
 ### 压缩与解压
 
-```compress-archive```
+compress-archive
 
-```extract-archive```
+extract-archive
 
 ### 通过 Set-Processmitigation 命令关闭 DEP (Data Execution Prevention)
 
@@ -116,7 +116,9 @@ install-windowsfeature Telnet-Client
 [Powershell关闭DEP方法](https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-defender-exploit-guard/customize-exploit-protection#cmdlets-table)
 
 
-#### 2. 在使用上述方法之前，需要安装一个powershell的[ProcessMitigations工具包](https://www.powershellgallery.com/packages/ProcessMitigations/1.0.7)，通过 ```Install-Module -Name ProcessMitigations```在线安装：
+#### 2. 在使用上述方法之前，需要安装一个powershell的[ProcessMitigations工具包](https://www.powershellgallery.com/packages/ProcessMitigations/1.0.7)
+
+通过 ```Install-Module -Name ProcessMitigations``` 在线安装：
 
 ```
 PS C:\Users\Administrator> Install-Module -Name ProcessMitigations
