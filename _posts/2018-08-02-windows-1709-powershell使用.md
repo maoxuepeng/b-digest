@@ -107,5 +107,113 @@ install-windowsfeature Telnet-Client
 ```compress-archive```
 ```extract-archive```
 
+### 通过 Set-Processmitigation 命令关闭 DEP (Data Execution Prevention)
+
+#### 1. 参考如下方法设置 DEP：
+[Customize Exploit protection](https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-defender-exploit-guard/customize-exploit-protection)
+[Powershell关闭DEP方法](https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-defender-exploit-guard/customize-exploit-protection#cmdlets-table)
+
+
+#### 2. 在使用上述方法之前，需要安装一个powershell的[ProcessMitigations工具包](https://www.powershellgallery.com/packages/ProcessMitigations/1.0.7)，通过 ```Install-Module -Name ProcessMitigations```在线安装：
+
+```
+PS C:\Users\Administrator> Install-Module -Name ProcessMitigations
+
+需要使用 NuGet 提供程序来继续操作
+PowerShellGet 需要使用 NuGet 提供程序“2.8.5.201”或更高版本来与基于 NuGet 的存储库交互。必须在“C:\Program
+Files\PackageManagement\ProviderAssemblies”或“C:\Users\Administrator\AppData\Local\PackageManagement\ProviderAssemblies”中提供 NuGet
+提供程序。也可以通过运行 'Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force' 安装 NuGet 提供程序。是否要让 PowerShellGet 立即安装并导入
+NuGet 提供程序?
+[Y] 是(Y)  [N] 否(N)  [S] 暂停(S)  [?] 帮助 (默认值为“Y”):
+
+不受信任的存储库
+你正在从不受信任的存储库安装模块。如果你信任该存储库，请通过运行 Set-PSRepository cmdlet 更改其 InstallationPolicy 值。是否确实要从“PSGallery”安装模块?
+[Y] 是(Y)  [A] 全是(A)  [N] 否(N)  [L] 全否(L)  [S] 暂停(S)  [?] 帮助 (默认值为“N”): A
+```
+
+#### 3. 如果需要离线安装，则将在线安装的包save到本地，然后通过指定path方式安装。
+
+参考 [通过指定Path方式安装](https://activedirectorypro.com/install-powershell-modules/)
+
+- Save到本地目录
+
+Powershell module 查找路径： ```$Env:PSModulePath```
+
+```
+Save-Module -Name ProcessMitigations -Path /
+```
+
+- 将save的文件拷贝到查找路径
+
+```
+PS C:\> cp .\ProcessMitigations 'C:\Program Files\WindowsPowerShell\Modules\' -recurse
+PS C:\> ls  'C:\Program Files\WindowsPowerShell\Modules\'
+
+
+    Directory: C:\Program Files\WindowsPowerShell\Modules
+
+
+Mode                LastWriteTime         Length Name
+----                -------------         ------ ----
+d-----        9/29/2017   8:28 PM                Microsoft.PowerShell.Operation.Validation
+d-----        9/29/2017   8:28 PM                PackageManagement
+d-----        9/29/2017   8:28 PM                Pester
+d-----        9/29/2017   8:28 PM                PowerShellGet
+d-----         9/8/2018  12:50 PM                ProcessMitigations
+d-----        9/29/2017   8:28 PM                PSReadline
+
+```
+
+- 查看可用module
+
+```
+PS C:\> Get-Module -ListAvailable
+
+
+    Directory: C:\Program Files\WindowsPowerShell\Modules
+
+
+ModuleType Version    Name                                ExportedCommands
+---------- -------    ----                                ----------------
+Script     1.0.1      Microsoft.PowerShell.Operation.V... {Get-OperationValidation, Invoke-OperationValidation}
+Binary     1.0.0.1    PackageManagement                   {Find-Package, Get-Package, Get-PackageProvider, Get-PackageSource...}
+Script     3.4.0      Pester                              {Describe, Context, It, Should...}
+Script     1.0.0.1    PowerShellGet                       {Install-Module, Find-Module, Save-Module, Update-Module...}
+Binary     1.0.7      ProcessMitigations                  {Get-ProcessMitigation, Set-ProcessMitigation, ConvertTo-ProcessMitigationPolicy}
+Script     1.2        PSReadline                          {Get-PSReadlineKeyHandler, Set-PSReadlineKeyHandler, Remove-PSReadlineKeyHandler, Get-PSReadlin...
+
+```
+
+- 导入powershell module
+
+```
+PS C:\> Import-module -name ProcessMitigations
+```
+
+** 在 docker 环境下，制作docker镜像时候，在dockerfile中执行上述离线安装步骤。 **
+
+#### 4. 安装完成后，可以执行如下命令查看，设置进程的DEP
+
+```
+Set-Processmitigation -Name <process-name> -Disable DEP
+PS C:\> Set-Processmitigation -Name <PROCESS-NAME.exe> -Disable DEP
+PS C:\> Get-ProcessMitigation -name <PROCESS-NAME.exe>
+
+ProcessName: <PROCESS-NAME.exe>
+Source     : Registry
+Id         : 0
+
+DEP:
+    Enable                      : off
+    Disable ATL                 : off
+
+...
+
+```
+
 ## 华为云windows容器镜像
 swr.cn-north-1.myhuaweicloud.com/microsoft/mssql-server-windows-developer:1709
+
+## nds配置
+Get-DnsClientServerAddress
+Set-DnsClientServerAddress
