@@ -8,7 +8,7 @@ tags: 微服务 SDK ServiceMesh Dubbo SpringCloud ServiceComb
 自从Netflix在AWS上实践PaaS平台的经验被推广后，同时借助开源出来的SpringCloud微服务框架，微服务领域一直是Java语言+Java SDK模式占统治地位。
 
 经过这么些年的发展，微服务架构思想已经深入影响了各行各业架构师的架构选型，在技术架构选型的备选中，微服务通常是第一个考虑的。SDK模式的微服务架构已经被广泛应用于生产系统。
-补充微服务架构图
+<!--more-->
 
 随着这两年ServiceMesh技术的火热，部分新技术敏感的用户提出如何从当前SDK模式演进到ServiceMesh模式，换句话说，如何做到在同一个微服务架构系统中，让SDK模式与ServiceMesh模式两种应用融合互通？因为演进的过程可能是一个长期过程，也有可能是最终态。
 
