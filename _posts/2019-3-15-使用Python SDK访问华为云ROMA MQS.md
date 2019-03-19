@@ -10,7 +10,7 @@ tags: ROMA Python Kafka HuaweiCloud
 ### 安装 Kafka Python SDK
 使用原生的 Python SDK [confluent-kafka-python](https://github.com/confluentinc/confluent-kafka-python) ，执行 ```pip install confluent-kafka``` 完成安装。
 
-当前只支持1.x版本的SDK，不支持0.x以及2.x版本的SDK。
+当前只支持1.x版本的SDK，不支持0.x以及2.x版本的SDK。<!--more-->
 
 在ubuntu1604上安装 confluent-kafka 需要安装依赖包：
 
@@ -102,13 +102,16 @@ while True:
 
     if msg is None:
         continue
-    if msg.error():
+    if not msg.error():
+        print('Received message: {}'.format(msg.value().decode('utf-8')))
+    elif msg.error().code() == KafkaError._PARTITION_EOF:
+        print("Consumer error: reached the broker EOF")
+    else:
         print("Consumer error: {}".format(msg.error()))
-        continue
-
-    print('Received message: {}'.format(msg.value().decode('utf-8')))
 
 c.close()
 ```
 
 上述代码是自动确认消费，如果希望根据业务逻辑处理结果来判断是否提交消费结果，可以设置为手动提交。具体参考[官方文档](https://docs.confluent.io/2.0.0/clients/consumer.html)。
+
+另外，上述消费代码，在每次消费完消息后，会得到一个 Broker EOF 的错误，具体参考[此ISSUE](https://github.com/confluentinc/confluent-kafka-python/issues/283)。这个错误不影响消费，可以忽略。
