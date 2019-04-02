@@ -40,25 +40,31 @@ tags: RabbitMQ
 ### Exchange 类别
 
 - Direct Exchange
+
 ![](https://www.cloudamqp.com/img/blog/direct-exchange.png)
 Direct Exchange 根据 Routing Key 投递消息，Routing Key 由生产者在生产消息时候设置到消息头内。 Direct Exchange投递规则是 **精确匹配 Binding Key 与 Routing Key** 。
 
 - Default Exchange
+
 Default Exchange 是一个系统预定义的、Routing Key 为空字符串 "" 的 Direct Exchange 。每个 Queue 都自动绑定到 Default Exchange ，其 Routing Key 就是 队列名称。
 
 - Topic Exchange
+
 ![](https://www.cloudamqp.com/img/blog/topic-exchange.png)
 Topic Exchange 根据通配符匹配规则投递消息：匹配 Routing Key 与 Routing Pattern ， Routing Pattern 在 binding 时候指定。
 
 - Fanout Exchange
+
 ![](https://www.cloudamqp.com/img/blog/fanout-exchange.png)
 Fanout Exchange 将消息投递到所有队列。
 
 - Headers Exchange
+
 ![](https://www.cloudamqp.com/img/blog/headers-exchange.png)
 Headers Exchange 根据头部选项投递消息，通过 "x-match" 定义匹配动作: any, all
 
 - Dead Letter Exchange
+
 如果消息找不到投递队列，则会被丢弃；RabbitMQ提供了 Dead Letter Exchange ，用于记录无法投递的消息。
 
 ### Reference
