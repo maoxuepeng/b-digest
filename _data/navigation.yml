@@ -14,7 +14,7 @@ header:
       zh-HK   : *ZH_HANT
       ko      : &KO       
       ko-KR   : *KO
-    url: /csm.md  
+    url: /csm.html  
 
   - titles:
       en      : &EN       Archive
