@@ -120,11 +120,6 @@ sharing:
 comments:
   provider: valine # false (default), "disqus", "gitalk", "valine", "custom"
 
-  ## valine
-  valine:
-    app_id  : tKL7hY1RbrIwAYMY3cYLoQuD-gzGzoHsz
-    app_key : RpwT5CqPAfDv91M2Ku78xYin
-
   ## Gitalk
   # please refer to https://github.com/gitalk/gitalk for more info.
   gitalk:
@@ -138,10 +133,10 @@ comments:
   ## Valine
   # please refer to https://valine.js.org/en/ for more info.
   valine:
-    app_id      : # LeanCloud App id
-    app_key     : # LeanCloud App key
+    app_id  : tKL7hY1RbrIwAYMY3cYLoQuD-gzGzoHsz
+    app_key : RpwT5CqPAfDv91M2Ku78xYin
     placeholder : # Prompt information
-    visitor     : # false (default)
+    visitor     : true # false (default)
     meta        : # "[nick, mail, link]" (default) nickname, E-mail, Personal-site
 
 
