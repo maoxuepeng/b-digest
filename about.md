@@ -19,3 +19,6 @@ key: page-about
 ---
 
 Best practice on clouds.
+
+关注公众号获取实时推送文章。
+
