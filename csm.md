@@ -720,6 +720,15 @@ Application configuration templating, rendering, notification. The open source s
 
 
 ## 安全、身份管理与访问控制
+### 秘钥管理与数据加密
+秘钥管理与数据加密服务，秘钥使用FIPS 140-2 认证的硬件安全模块(Hardware Security Module)保存，秘钥更新，提供[信封加密](https://help.aliyun.com/knowledge_detail/42339.html)等功能。
+- huawei cloud: [数据加密服务 DEW](https://www.huaweicloud.com/product/dew.html)
+- aliyun: [密钥管理服务（KeyManagementService）](https://www.aliyun.com/product/kms)
+- tencent cloud: [数据加密服务](https://cloud.tencent.com/product/cloudhsm)
+- aws: [AWS Key Management Service](https://aws.amazon.com/kms)
+- azure: [Key Vault](https://azure.microsoft.com/en-us/services/key-vault/)
+- google cloud: [CLOUD KEY MANAGEMENT SERVICE](https://cloud.google.com/kms/)
+
 
 ## 软件开发工具
 
