@@ -66,9 +66,9 @@ Docker 1.10 版本开始，Docker官方镜像仓库与Docker-EE/Docker-CE都支�
 
 RUN, COPY 命令都要使用到绝对路径，定义好 WORKDIR 会使得 Dockerfile 移植性更好，更容易维护。
 
-###1.4 ENV与ARG
+### 1.4 ENV与ARG
 
-#### 1.3.2 勿使用ENV与ARG传递敏感信息
+#### 1.4.1 勿使用ENV与ARG传递敏感信息
 
 ENV, ARG 的值都会被记录下来，通过 ```docker image history``` 命令可以查看到，因此不要将敏感信息传递给ENV与ARG。
 
