@@ -89,6 +89,19 @@ AWS SaaS Factory 针对SaaS系统架构中各个组成部分提供对应资源�
 
 ![](/images/20190704-23.jpg)
 
+还有一点印象深刻就是 [AWS DynamonDB Global Table](https://aws.amazon.com/cn/dynamodb/global-tables/) 特性：
+
+```
+Global Tables 基于 DynamoDB 的全球覆盖范围构建，为您提供一个完全托管的、多区域、多主控数据库，该数据库为大规模的全局应用程序提供快速、本地的读写性能。Global Tables 在您选择的 AWS 区域中自动复制您的 Amazon DynamoDB 表。
+Global Tables 消除了在区域之间复制数据和解决更新冲突的困难工作，使您能够专注于应用程序的业务逻辑。此外， Global Tables 使您的应用程序能够保持高度可用，即使在偶尔发生整个区域被隔离或降级的情况下也是如此。
+```
+
+现场讲师提问如何用 DynamonDB 实现数据跨Region复制，立马有人回答使用Global Table，这个回答的人肯定是觉得此特性非常好用的。
+
+我们通常说的PaaS层的服务有粘性，有时候我们并没有理解到"粘性"的内涵，上述 Global Table 就是粘性非常大的特性，简单设置就能完成多个Region之间的数据同步。
+
+**粘性不是通过私有API将客户绑定，而是提供真正解决客户问题的特性吸引客户，真的能够解决客户问题的特性，客户不Care API是否是私有的。**
+
 ## Reference
 
 [AWS SaaS Factory](https://aws.amazon.com/cn/partners/saas-factory/)
