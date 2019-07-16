@@ -56,7 +56,7 @@ AWS SaaS Factory 针对SaaS系统架构中各个组成部分提供对应资源�
 
 ## 使用Container与Serverless构建SaaS
 
-讲解AWS上构建SaaS的不同技术，EC2，ECS/EKS，Serverless。并分享了几个SaaS客户案例，从分享的案例来看，目前还是使用EC2的客户较多（重点分享了金蝶云星空的案例），部分客户使用ECS/EKS，使用Serverless的客户还没有。
+讲解AWS上构建SaaS的不同技术，EC2，ECS/EKS，Serverless。并分享了几个SaaS客户案例，从分享的案例来看，目前还是使用EC2的客户较多（重点分享了某ERP案例），部分客户使用ECS/EKS，使用Serverless的客户还没有。
 
 ![](/images/20190704-14.jpg)
 
