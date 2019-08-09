@@ -1,7 +1,7 @@
 ---
 key: 20190808
-title: 使用CRI-O混合编排Kata-Runtime安全容器与LXC容器
-tags: CRI-O Kata-Runtime Kata-Container 安全容器
+title: 使用CRI-O混合编排MicroVM安全容器与LXC容器
+tags: CRI-O MicroVM LXC Kata-Runtime Kata-Container 安全容器
 ---
 
 在 [容器实践路线图](/2019/7/20/容器实践路线图.html) 介绍了几种应用虚拟化技术: LXC/MicroVM/LibOS ，Kata-Runtime 就是一种可以管理 MicroVM, 并兼容 OCI 与 CRI 规范的容器运行时。本文介绍如何使用 Kubernetes + CRI-O 混合编排 MicroVM容器（也称为安全容器）与LXC容器。本文的实践操作依赖[在Kubernetes中使用CRI-O运行时](/2019/08/06/在Kubernetes中使用CRI-O运行时.html)。<!--more-->
