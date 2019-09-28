@@ -342,6 +342,16 @@ Global content delivery network that transfers audio, video, applications, image
 - azure: [Azure Content Delivery Network](https://azure.microsoft.com/en-us/services/cdn/)
 - google cloud: [CLOUD CDN](https://cloud.google.com/cdn/)
 
+### 动态 CDN (Dynamic Site Acceleartion)
+
+- huawei cloud: [内容分发网络（CDN），全站加速](https://www.huaweicloud.com/product/cdn.html)
+- aliyun: [全站加速](https://cn.aliyun.com/product/dcdn)
+- tencent cloud: [全站加速网络 ECDN](https://cloud.tencent.com/product/dsa), [全球应用加速 GAAP](https://cloud.tencent.com/product/gaap), [Anycast 公网加速 AIA](https://cloud.tencent.com/product/aia)
+- aws: [Amazon CloudFront Dynamic Content](https://aws.amazon.com/cloudfront/dynamic-content/)
+- azure: [Azure Front Door](https://azure.microsoft.com/zh-cn/services/frontdoor/)
+- google cloud: [CLOUD CDN](https://cloud.google.com/cdn/)
+
+
 ### NAT 网关 NAT Gateway
 
 Provides Source Network Address Translation (SNAT) and Destination Network Address Translation (DNAT) functions for virutal servers in a Virtual Private Cloud (VPC), making it easier for you to configure the ingress and egress for a VPC.
