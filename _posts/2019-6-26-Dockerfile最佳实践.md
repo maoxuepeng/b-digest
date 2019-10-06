@@ -251,3 +251,5 @@ Docker 支持从stdin输入 dockerfile ，这种方式不会加载任何本地�
 [hadolint规范与检查工具](https://github.com/hadolint/hadolint)
 
 [Build secrets and SSH forwarding in Docker 18.09](https://medium.com/@tonistiigi/build-secrets-and-ssh-forwarding-in-docker-18-09-ae8161d066)
+
+[dcoker-slim](https://github.com/docker-slim/docker-slim)
