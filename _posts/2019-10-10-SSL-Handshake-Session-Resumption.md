@@ -4,25 +4,20 @@ title: SSL Handshake Session Resumption(Session Id & Session Ticket)
 tags: SSL Session-Resumption SessionId SessionTicket 
 ---
 
-SSL(HTTPS) 基本普及，SSL是TCP上层协议，每次新建连接时都需要经过一次SSL握手流程，SSL握手需要至少2个RTT，加上TCP建连接的一个RTT，总共需要至少3个RTT，对于频繁建链以及网络条件较差（特别是移动网络）场景，这个时间会难以接受（移动网络场景下SSL握手耗时通常需要100~200ms，网络条件较差的场景下可能翻倍）。针对这个问题的一个解决方案是SSL Session复用。 <!--more-->
+SSL(HTTPS) 已是当下互联网服务提供者必备选项，SSL给网络带来安全同时也引入性能损耗，性能损耗表现在首次连接握手耗时、通信过程消息加解密耗时耗力。本文介绍SSL握手耗时以及Session复用技术。<!--more-->
 
 ## Session 复用 (Session Resumption) 的两种机制：SessionId 与 SessionTicket
 
-SSL 握手流程图
-
-![SSL Handshake](https://calendar.perfplanet.com/wp-content/uploads/2014/12/tls-image02.jpg)
+SSL协议每次新建连接时都需要经过一次SSL握手流程，SSL握手需要至少2个RTT，加上TCP建连接的一个RTT，总共需要至少3个RTT，对于频繁建链以及网络条件较差（特别是移动网络）场景，这个时间会难以接受（移动网络场景下SSL握手耗时通常需要100~200ms，网络条件较差的场景下可能翻倍）。针对这个问题的一个解决方案是SSL Session复用。
+SSL Session复用有SessionId复用与SessionTicket复用两种实现方式。
 
 ### SessionId 复用
 
 SessionId 复用机制是服务端缓存 SSL Session ，客户端在 SSL 握手消息中带上 SessionId，服务端根据客户端发送的 SessionId 到缓存中查找，如果找到了则复用此 Session ，否则重新握手。
 
-![SessionId Resumption](https://calendar.perfplanet.com/wp-content/uploads/2014/12/tls-image01.jpg)
-
 ### SessionTicket 复用
 
 SessionTicket 复用机制是客户端缓存 SessionTicket 这么一个结构，在握手消息(ClientHello) 中发送给服务端，服务端通过私钥验证 SessionTicket 合法性，如果验证通过则复用此Sesion，否则重新握手。
-
-![SessionTicket Resumption](https://calendar.perfplanet.com/wp-content/uploads/2014/12/tls-image00.jpg)
 
 ### 两种机制比较
 
@@ -36,38 +31,145 @@ SessionTicket 机制相比较于 SessionId 要更优，主要表现为：
 
 ## RFC5077 定义 SSL 握手协议中如何使用 SessionTicket 机制复用 Session
 
-### 在SSL握手结构体中扩展 NewSessionTicket 结构
+### 数据结构定义
 
-```html
-      struct {
-          HandshakeType msg_type;
-          uint24 length;
-          select (HandshakeType) {
-              case hello_request:       HelloRequest;
-              case client_hello:        ClientHello;
-              case server_hello:        ServerHello;
-              case certificate:         Certificate;
-              case server_key_exchange: ServerKeyExchange;
-              case certificate_request: CertificateRequest;
-              case server_hello_done:   ServerHelloDone;
-              case certificate_verify:  CertificateVerify;
-              case client_key_exchange: ClientKeyExchange;
-              case finished:            Finished;
-              case session_ticket:      NewSessionTicket; /* NEW */
-          } body;
-      } Handshake;
+#### NewSessionTicket 结构
+
+```c
+struct {
+    HandshakeType msg_type;
+    uint24 length;
+    select (HandshakeType) {
+        case hello_request:       HelloRequest;
+        case client_hello:        ClientHello;
+        case server_hello:        ServerHello;
+        case certificate:         Certificate;
+        case server_key_exchange: ServerKeyExchange;
+        case certificate_request: CertificateRequest;
+        case server_hello_done:   ServerHelloDone;
+        case certificate_verify:  CertificateVerify;
+        case client_key_exchange: ClientKeyExchange;
+        case finished:            Finished;
+        case session_ticket:      NewSessionTicket; /* NEW */
+    } body;
+} Handshake;
 
 
-      struct {
-          uint32 ticket_lifetime_hint;
-          opaque ticket<0..2^16-1>;
-      } NewSessionTicket;
+struct {
+    uint32 ticket_lifetime_hint;
+    opaque ticket<0..2^16-1>;
+} NewSessionTicket;
 
 ```
 
+```NewSessionTicket``` 结构体包含Ticket超时时间与ticket内容两个字段
+
+- ticket_lifetime_hint: ticket 超时时间，单位为秒；客户端应当在废弃超时的SessionTicket，不再传递给服务端。
+- ticket: SessionTicket 结构
+
+#### SessionTicket 结构
+
+```c
+struct {
+    opaque key_name[16];
+    opaque iv[16];
+    opaque encrypted_state<0..2^16-1>;
+    opaque mac[32];
+} ticket;
+```
+
+- key_name: 用来加密```StatePlaintext```的AES Key名称 (HMAC-SHA-256的Key？是哪個？共用？)
+- encrypted_state: AES-128-CBC 加密的 SSLSession 状态结构体 (用什么Key加密的？SSL握手协商后的AES KEY？)
+- iv: 加密 ```encrypted_state``` 的初始向量
+- mac: HMAC-SHA-256(key_name(16字节), iv(16字节), len(encrypted_state)(2字节), encrypted_state)
+
+#### StatePlaintext(encrypted_state明文)结构
+
+```c
+struct {
+    ProtocolVersion protocol_version;
+    CipherSuite cipher_suite;
+    CompressionMethod compression_method;
+    opaque master_secret[48];
+    ClientIdentity client_identity;
+    uint32 timestamp;
+} StatePlaintext;
+
+enum {
+    anonymous(0),
+    certificate_based(1),
+    psk(2)
+} ClientAuthenticationType;
+
+struct {
+    ClientAuthenticationType client_authentication_type;
+    select (ClientAuthenticationType) {
+        case anonymous: struct {};
+        case certificate_based:
+            ASN.1Cert certificate_list<0..2^24-1>;
+        case psk:
+            opaque psk_identity<0..2^16-1>;   /* from [RFC4279] */
+
+    }
+} ClientIdentity;
+```
+
+- protocol_version: SSL握手协商好的协议版本，如 ```TLS1.2``
+- cipher_suite: SSL握手协商好的对称加密算法，如 ```ECDHE-ECDSA-AES128-GCM-SHA256```
+- compression_method: 应用消息发送前压缩算法
+- master_secret: SSL握手结果中的 master_secret，客户端与服务端保持同一个 master_secret ，其他的Key(AES加密密钥/HMAC密钥都基于此Key计算得到）；参考 [rfc5246](https://tools.ietf.org/html/rfc5246), [pre-master secret&master secret](https://crypto.stackexchange.com/questions/27131/differences-between-the-terms-pre-master-secret-master-secret-private-key)
+
+```html 
+master_secret = PRF(pre_master_secret, "master secret",
+                    ClientHello.random + ServerHello.random)
+                    [0..47];
+```
+
+- client_identity:
+  - anonymous(客户端不认证服务端证书), 值为空结构体
+  - certificate_list(客户端通过证书认证服务端)，值为服务端证书(链)
+  - psk_identity(客户端通过 [PSK(Pre-Shared Key)](https://tools.ietf.org/html/rfc4279)认证服务端)，值为 PSK 结构
+- timestamp: 生成 SessionTicket 的时间戳；服务端根据时间戳与超时时间判定 SessionTicekt 是否超时。
+
 ### 首次握手时候，服务端在握手完成的消息中带上 NewSessionTicket ，客户端缓存 SessionTicket
 
+```html
+         Client                                               Server
+
+         ClientHello
+        (empty SessionTicket extension)-------->
+                                                         ServerHello
+                                     (empty SessionTicket extension)
+                                                        Certificate*
+                                                  ServerKeyExchange*
+                                                 CertificateRequest*
+                                      <--------      ServerHelloDone
+         Certificate*
+         ClientKeyExchange
+         CertificateVerify*
+         [ChangeCipherSpec]
+         Finished                     -------->
+                                                    NewSessionTicket
+                                                  [ChangeCipherSpec]
+                                      <--------             Finished
+         Application Data             <------->     Application Data
+```
+
 ### 客户端要复用Session时候，在 ClientHello 消息中带上 SessionTicket ，服务端可以选择复用此Session，可以选择不复用（重新生成）
+
+```html
+         Client                                                Server
+         ClientHello
+         (SessionTicket extension)      -------->
+                                                          ServerHello
+                                      (empty SessionTicket extension)
+                                                     NewSessionTicket
+                                                   [ChangeCipherSpec]
+                                       <--------             Finished
+         [ChangeCipherSpec]
+         Finished                      -------->
+         Application Data              <------->     Application Data
+```
 
 #### 服务端选择复用Session
 
@@ -135,6 +237,39 @@ The default value for session timeout is decided on a per protocol basis, see SS
 ### SessionTicket 存储空间控制
 
 SessionTicket 存储在内存还是文件？允许最大空间是多大？超过最大存储空间后的清理策略？
+
+上面几个问题，依赖客户端的SSL实现，在Android环境下的OkHttp的行为如下:
+
+- SessionTicket 复用默认启用
+- SessionTicket 默认存储在内存
+- SessionTicket 支持使用外部持久化存储，要实现此功能，可以扩展实现一个```SSLSocketFactory```类，参考 []() 实现；这个实现中，可支持App定义一个持久化目录，SessionTicket会以文件形式存储到目录下，最大12个，超过之后按照 LRU 算法删除一个
+
+## 安全性
+
+引入SessionTicket之后，可能引入安全隐患的点有:
+
+- SSL 握手流程简化可能引入安全隐患
+- SessionTicket客户端存储，泄漏后可能引入安全隐患
+- SessionTicket服务端存储，加上验证SessionTicket的Key，泄漏后可能引入安全隐患
+
+复用的流程与SessionTicket敏感泄漏两方面中的安全性。
+
+### SSL 握手流程简化引入的安全隐患: 中间人攻击？
+
+客户端在ClientHello消息中带上SessionTicket，服务端接收到客户端发送过来的SessionTicket之后，使用服务端的SessionTicket加密Key验证SessionTicket：
+
+- 如果验证失败，可能不是自己签发的，或者服务端已经更新了SessionTicket验证Key（从安全角度建议服务端周期更新Key），那么走一次完整的SSL握手流程。这种情况没有引入额外安全隐患。
+- 如果验证成功，服务端回复ServerHello消息中回复ChangeCipherSpec消息，并回复Finished，握手结束。
+
+验证成功的场景下，客户端不会执行认证服务端证书步骤，如果此时服务端被伪造了，会发生中间人攻击(??待验证??)，客户端连接到了一个伪冒的服务端。
+
+### SessionTicket客户端存储泄漏后可能的安全隐患: 较轻
+
+如果SessionTicket泄漏后，攻击者持有SessionTicket以简化流程与服务端快速建立SSL连接，此处并未额外增加安全隐患，完整握手流程下客户端也可以与服务端连接SSL连接。
+
+### SessionTicket服务端存储泄漏后可能的安全隐患: 连接被侦听
+
+如果服务端用来解密SessionTicket的Key(AES-128算法)泄漏了，会导致SessionTicket内容别解密，攻击者通过网络抓包截流之后，可以解密通道的内容。
 
 ## 测试服务端是否支持SessionTicket复用
 
@@ -263,3 +398,11 @@ Reused, TLSv1.2, Cipher is ECDHE-ECDSA-AES128-GCM-SHA256
 [How should I check if SSL session resumption is working or not?](https://serverfault.com/questions/345891/how-should-i-check-if-ssl-session-resumption-is-working-or-not)
 
 [Web性能权威指南](https://www.ituring.com.cn/book/1194)
+
+[boringssl-ssl.h](https://commondatastorage.googleapis.com/chromium-boringssl-docs/ssl.h.html)
+
+[rfc4507bis](https://tools.ietf.org/html/draft-salowey-tls-rfc4507bis-01)
+
+[rfc7627](https://tools.ietf.org/html/rfc7627)
+
+[About TLS Perfect Forward Secrecy and Session Resumption](https://blog.compass-security.com/2017/06/about-tls-perfect-forward-secrecy-and-session-resumption/)
