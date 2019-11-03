@@ -8,13 +8,13 @@ tags: SSL Session-Resumption SessionTicket OkHttp Android
 
 ## 概述
 
-Android系统上作为客户端通过HTTPS请求服务端资源，客户端由3部分构成：Android系统运行时、HTTPClient、SSL库。本文参考的源代码，对应的Android系统运行时为[api-level-28](git@github.com:AndroidSDKSources/android-sdk-sources-for-api-level-28.git)，HTTPClient为[OKHttp-latest](git@github.com:square/okhttp.git)，SSL库为[conscrypt](https://source.android.google.cn/devices/architecture/modular-system/conscrypt)(conscrypt底层SSL库是[BoringSSL](https://boringssl.googlesource.com/boringssl/)，谷歌基于OpenSSL fork出来的实现)。
+Android系统上作为客户端通过HTTPS请求服务端资源，客户端由3部分构成：Android系统运行时、HTTPClient、SSL库。本文参考的源代码，对应的Android系统运行时为[api-level-28](https://github.com/AndroidSDKSources/android-sdk-sources-for-api-level-28)，HTTPClient为[OKHttp-latest](https://github.com/square/okhttp)，SSL库为[conscrypt](https://source.android.google.cn/devices/architecture/modular-system/conscrypt)(conscrypt底层SSL库是[BoringSSL](https://boringssl.googlesource.com/boringssl/)，谷歌基于OpenSSL fork出来的实现)。
 
 Android系统基于上述SSL库，默认的行为是启动SessionTicket，SessionTicket缓存在内存中，支持SessionTicket缓存到文件。要使用SessionTicket缓存到文件的功能，设置全局属性```org.conscrypt.Conscrypt.setClientSessionCache(SSLContext context, SSLClientSessionCache cache)```，其中```SSLClientSessionCache```选择```org.conscrypt.FileClientSessionCache.Impl```。
 
 ## 默认开启SessionTicket复用
 
-1. RealConnection.kt: 初始化 SSL Socket
+### 1. RealConnection.kt: 初始化 SSL Socket
 
 ```kotlin
   fun connect(
@@ -59,7 +59,7 @@ private fun connectTls(connectionSpecSelector: ConnectionSpecSelector)
       }
 ```
 
-2. Platform.kt
+### 2. Platform.kt
 
 ```kotlin
   companion object {
@@ -80,7 +80,7 @@ private fun connectTls(connectionSpecSelector: ConnectionSpecSelector)
       }
 ```
 
-3. AndroidPlatform.kt
+### 3. AndroidPlatform.kt
 
 ```kotlin
 /** Android 5+. */
@@ -101,7 +101,7 @@ class AndroidPlatform : Platform() {
   }
 ```
 
-4. ConscryptSocketAdapter.kt
+### 4. ConscryptSocketAdapter.kt
 
 ```kotlin
   override fun configureTlsExtensions(
@@ -120,13 +120,13 @@ class AndroidPlatform : Platform() {
   }
 ```
 
-5. org.conscrypt.OpenSSLSocketImpl.java
+### 5. org.conscrypt.OpenSSLSocketImpl.java
 
 ```java
 public abstract void setUseSessionTickets(boolean useSessionTickets);
 ```
 
-6. org.conscrypt.ConscryptEngineSocket extends OpenSSLSocketImpl
+### 6. org.conscrypt.ConscryptEngineSocket extends OpenSSLSocketImpl
 
 ```java
 @Override
@@ -137,7 +137,7 @@ public final void setUseSessionTickets(boolean useSessionTickets) {
 
 ## 在SSL握手时复用SessionTicket
 
-1. RealConnection.kt
+### 1. RealConnection.kt
 
 ```kotlin
 private fun connectTls(connectionSpecSelector: ConnectionSpecSelector){
@@ -153,7 +153,7 @@ private fun connectTls(connectionSpecSelector: ConnectionSpecSelector){
 }
 ```
 
-2. sslSocket 对象就是 OpenSSLSocketImpl，实现类是 org.conscrypt.ConscryptEngineSocket
+### 2. sslSocket 对象就是 OpenSSLSocketImpl，实现类是 org.conscrypt.ConscryptEngineSocket
 
 ```java
 public final void startHandshake() throws IOException {
@@ -169,7 +169,7 @@ public final void startHandshake() throws IOException {
 }
 ```
 
-3. ConscryptEngine.java
+### 3. ConscryptEngine.java
 
 ```java
     @Override
@@ -207,11 +207,11 @@ public final void startHandshake() throws IOException {
     }
 ```
 
-4. org.conscrypt.SSLParametersImpl 
+### 4. org.conscrypt.SSLParametersImpl 
 
 构造函数中传递了org.conscrypt.ClientSessionContext clientSessionContext对象
 
-5. org.conscrypt.ClientSessionContext.java
+### 5. org.conscrypt.ClientSessionContext.java
 
 ```java
     /**
@@ -269,7 +269,7 @@ public final void startHandshake() throws IOException {
     }
 ```
 
-6. 保存session时候，只有multi-use的session才会存储到文件，single-use的session只存储到内存
+### 6. 保存session时候，只有multi-use的session才会存储到文件，single-use的session只存储到内存
 
 ```java
     @Override
@@ -293,7 +293,7 @@ public final void startHandshake() throws IOException {
     }
 ```
 
-7. 判断session是single use还是multi use在org.conscrypt.NativeSslSession中
+### 7. 判断session是single use还是multi use在org.conscrypt.NativeSslSession中
 
 ```java
         @Override
