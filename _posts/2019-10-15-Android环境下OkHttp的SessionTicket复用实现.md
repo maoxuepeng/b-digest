@@ -2,29 +2,66 @@
 key: 20191015
 title: Android环境下OkHttp的SessionTicket复用实现
 tags: SSL Session-Resumption SessionTicket OkHttp Android
-published: false
 ---
 
+在文章[SSL Handshake Session Resumption](2019/10/10/SSL-Handshake-Session-Resumption.html)中介绍了SessionTicket的复用技术原理，从中我们得知SessionTicket复用是在客户端缓存的SessionTicket，服务端只是验证客户端传过去的SessionTicket是否有效，因此不同的客户端实现库，对SessionTicket的缓存机制有差异。本文介绍Android系统上OKHttp客户端的SessionTicket缓存实现。<!--more-->
 
-#### Android 运行环境下 SessionTicket 存储空间控制
+## 概述
 
-客户端Session缓存在内存与文件中，Session有两种类型：multi-use/single-use，只有multi-use类型的Session才缓存到文件。
+Android系统上作为客户端通过HTTPS请求服务端资源，客户端由3部分构成：Android系统运行时、HTTPClient、SSL库。本文参考的源代码，对应的Android系统运行时为[api-level-28](git@github.com:AndroidSDKSources/android-sdk-sources-for-api-level-28.git)，HTTPClient为[OKHttp-latest](git@github.com:square/okhttp.git)，SSL库为[conscrypt](https://source.android.google.cn/devices/architecture/modular-system/conscrypt)(conscrypt底层SSL库是[BoringSSL](https://boringssl.googlesource.com/boringssl/)，谷歌基于OpenSSL fork出来的实现)。
 
-1. RealConnection.kt
-fun connect
+Android系统基于上述SSL库，默认的行为是启动SessionTicket，SessionTicket缓存在内存中，支持SessionTicket缓存到文件。要使用SessionTicket缓存到文件的功能，设置全局属性```org.conscrypt.Conscrypt.setClientSessionCache(SSLContext context, SSLClientSessionCache cache)```，其中```SSLClientSessionCache```选择```org.conscrypt.FileClientSessionCache.Impl```。
+
+## 默认开启SessionTicket复用
+
+1. RealConnection.kt: 初始化 SSL Socket
+
+```kotlin
+  fun connect(
+    connectTimeout: Int,
+    readTimeout: Int,
+    writeTimeout: Int,
+    pingIntervalMillis: Int,
+    connectionRetryEnabled: Boolean,
+    call: Call,
+    eventListener: EventListener
+  ) {
+        ...
+
+        if (route.requiresTunnel()) {
+          connectTunnel(connectTimeout, readTimeout, writeTimeout, call, eventListener)
+          if (rawSocket == null) {
+            // We were unable to connect the tunnel but properly closed down our resources.
+            break
+          }
+        } else {
+          connectSocket(connectTimeout, readTimeout, call, eventListener)
+        }
+        establishProtocol(connectionSpecSelector, pingIntervalMillis, call, eventListener)
+        eventListener.connectEnd(call, route.socketAddress, route.proxy, protocol)
+        ...
+  }
+```
+
+```kotlin
 
 private fun establishProtocol
     connectTls(connectionSpecSelector)
 
+```
+
+```kotlin
 private fun connectTls(connectionSpecSelector: ConnectionSpecSelector)
       // Configure the socket's ciphers, TLS versions, and extensions.
       val connectionSpec = connectionSpecSelector.configureSecureSocket(sslSocket)
       if (connectionSpec.supportsTlsExtensions) {
         Platform.get().configureTlsExtensions(sslSocket, address.protocols)
       }
-
+```
 
 2. Platform.kt
+
+```kotlin
   companion object {
     @Volatile private var platform = findPlatform()
 
@@ -41,8 +78,11 @@ private fun connectTls(connectionSpecSelector: ConnectionSpecSelector)
       if (android != null) {
         return android
       }
+```
 
 3. AndroidPlatform.kt
+
+```kotlin
 /** Android 5+. */
 class AndroidPlatform : Platform() {
   private val socketAdapters = listOfNotNull(
@@ -59,9 +99,11 @@ class AndroidPlatform : Platform() {
     socketAdapters.find { it.matchesSocket(sslSocket) }
         ?.configureTlsExtensions(sslSocket, protocols)
   }
+```
 
 4. ConscryptSocketAdapter.kt
 
+```kotlin
   override fun configureTlsExtensions(
     sslSocket: SSLSocket,
     protocols: List<Protocol>
@@ -76,45 +118,28 @@ class AndroidPlatform : Platform() {
       Conscrypt.setApplicationProtocols(sslSocket, names.toTypedArray())
     }
   }
+```
 
-5. org.conscrypt.OpenSSLSocketImpl
+5. org.conscrypt.OpenSSLSocketImpl.java
+
+```java
 public abstract void setUseSessionTickets(boolean useSessionTickets);
+```
 
 6. org.conscrypt.ConscryptEngineSocket extends OpenSSLSocketImpl
-    @Override
-    public final void setUseSessionTickets(boolean useSessionTickets) {
-        engine.setUseSessionTickets(useSessionTickets);
-    }
 
-    private static ConscryptEngine newEngine(
-            SSLParametersImpl sslParameters, final ConscryptEngineSocket socket) {
-        SSLParametersImpl modifiedParams;
-        if (Platform.supportsX509ExtendedTrustManager()) {
-            modifiedParams = sslParameters.cloneWithTrustManager(
-                getDelegatingTrustManager(sslParameters.getX509TrustManager(), socket));
-        } else {
-            modifiedParams = sslParameters;
-        }
-        ConscryptEngine engine = new ConscryptEngine(modifiedParams, socket.peerInfoProvider());
+```java
+@Override
+public final void setUseSessionTickets(boolean useSessionTickets) {
+    engine.setUseSessionTickets(useSessionTickets);
+}
+```
 
-        // When the handshake completes, notify any listeners.
-        engine.setHandshakeListener(new HandshakeListener() {
-            /**
-             * Protected by {@code stateLock}
-             */
-            @Override
-            public void onHandshakeFinished() {
-                // Just call the outer class method.
-                socket.onHandshakeFinished();
-            }
-        });
+## 在SSL握手时复用SessionTicket
 
-        // Transition the engine state to MODE_SET
-        engine.setUseClientMode(sslParameters.getUseClientMode());
-        return engine;
-    }
+1. RealConnection.kt
 
-7. RealConnection.kt
+```kotlin
 private fun connectTls(connectionSpecSelector: ConnectionSpecSelector){
     ...
 
@@ -126,8 +151,11 @@ private fun connectTls(connectionSpecSelector: ConnectionSpecSelector){
 
     ...
 }
+```
 
-8. sslSocket 对象就是 OpenSSLSocketImpl，实现类是 org.conscrypt.ConscryptEngineSocket
+2. sslSocket 对象就是 OpenSSLSocketImpl，实现类是 org.conscrypt.ConscryptEngineSocket
+
+```java
 public final void startHandshake() throws IOException {
     ...
 
@@ -139,8 +167,11 @@ public final void startHandshake() throws IOException {
 
     ...
 }
+```
 
-9. ConscryptEngine.java
+3. ConscryptEngine.java
+
+```java
     @Override
     public void beginHandshake() throws SSLException {
         synchronized (ssl) {
@@ -174,18 +205,21 @@ public final void startHandshake() throws IOException {
     private ClientSessionContext clientSessionContext() {
         return sslParameters.getClientSessionContext();
     }
+```
 
-10. org.conscrypt.SSLParametersImpl 
+4. org.conscrypt.SSLParametersImpl 
+
 构造函数中传递了org.conscrypt.ClientSessionContext clientSessionContext对象
 
-11. org.conscrypt.ClientSessionContext.java
+5. org.conscrypt.ClientSessionContext.java
+
+```java
     /**
      * Gets the suitable session reference from the session cache container.
      */
     synchronized NativeSslSession getCachedSession(String hostName, int port,
             SSLParametersImpl sslParameters) {
         ...
-        
         NativeSslSession session = getSession(hostName, port);
         if (session == null) {
             return null;
@@ -193,7 +227,7 @@ public final void startHandshake() throws IOException {
 
         ...
 
-        if (session.isSingleUse()) {   ///只用一次？
+        if (session.isSingleUse()) {   
             removeSession(session);
         }
         return session;
@@ -233,9 +267,11 @@ public final void startHandshake() throws IOException {
 
         ...
     }
+```
 
-保存session时候，只有multi-use的session才会存储到文件，single-use的session只存储到内存
+6. 保存session时候，只有multi-use的session才会存储到文件，single-use的session只存储到内存
 
+```java
     @Override
     void onBeforeAddSession(NativeSslSession session) {
         String host = session.getPeerHost();
@@ -255,147 +291,17 @@ public final void startHandshake() throws IOException {
             }
         }
     }
+```
 
-判断session是single use还是multi use在org.conscrypt.NativeSslSession中
+7. 判断session是single use还是multi use在org.conscrypt.NativeSslSession中
+
+```java
         @Override
         boolean isSingleUse() {
             return NativeCrypto.SSL_SESSION_should_be_single_use(ref.address);
         }
-
-NativeSsl.java
-    void initialize(String hostname, OpenSSLKey channelIdPrivateKey) throws IOException {
-        ...
-
-        if (parameters.useSessionTickets) {
-            NativeCrypto.SSL_clear_options(ssl, this, SSL_OP_NO_TICKET);
-        } else {
-            NativeCrypto.SSL_set_options(
-                    ssl, this, NativeCrypto.SSL_get_options(ssl, this) | SSL_OP_NO_TICKET);
-        }
-        ...
-    }
-
-12. SSLClientSessionCache 
-
-13. org.conscrypt.FileClientSessionCache.java
-        public synchronized void putSessionData(SSLSession session, byte[] sessionData) {
-            String host = session.getPeerHost();
-            if (sessionData == null) {
-                throw new NullPointerException("sessionData == null");
-            }
-
-            String name = fileName(host, session.getPeerPort());
-            File file = new File(directory, name);
-
-            // Used to keep track of whether or not we're expanding the cache.
-            boolean existedBefore = file.exists();
-
-            FileOutputStream out;
-            try {
-                out = new FileOutputStream(file);
-            } catch (FileNotFoundException e) {
-                // We can't write to the file.
-                logWriteError(host, file, e);
-                return;
-            }
-
-            // If we expanded the cache (by creating a new file)...
-            if (!existedBefore) {
-                size++;
-
-                // Delete an old file if necessary.
-                makeRoom();
-            }
-        
-        ...
-        }
-
-        /**
-         * Deletes old files if necessary.
-         */
-        private void makeRoom() {
-            if (size <= MAX_SIZE) {
-                return;
-            }
-
-            indexFiles();
-
-            // Delete LRUed files.
-            int removals = size - MAX_SIZE;
-            Iterator<File> i = accessOrder.values().iterator();
-            do {
-                delete(i.next());
-                i.remove();
-            } while (--removals > 0);
-        }
-
-14. org.conscrypt.NativeSsl.java
-    int doHandshake() throws IOException {
-        lock.readLock().lock();
-        try {
-            return NativeCrypto.ENGINE_SSL_do_handshake(ssl, this, handshakeCallbacks);
-        } finally {
-            lock.readLock().unlock();
-        }
-    }
-
-handshakeCallbacks 由 ConscryptEngine 实现：
-
-final class ConscryptEngine extends AbstractConscryptEngine implements NativeCrypto.SSLHandshakeCallbacks,
-                                                         SSLParametersImpl.AliasChooser,
-                                                         SSLParametersImpl.PSKCallbacks {...}
-
-15. ConscryptEngineSocket.onHandshakeFinished()
-
-    private void onHandshakeFinished() {
-        boolean notify = false;
-        synchronized (stateLock) {
-            if (state != STATE_CLOSED) {
-                if (state == STATE_HANDSHAKE_STARTED) {
-                    state = STATE_READY_HANDSHAKE_CUT_THROUGH;
-                } else if (state == STATE_HANDSHAKE_COMPLETED) {
-                    state = STATE_READY;
-                }
-
-                // Unblock threads that are waiting for our state to transition
-                // into STATE_READY or STATE_READY_HANDSHAKE_CUT_THROUGH.
-                stateLock.notifyAll();
-                notify = true;
-            }
-        }
-
-        if (notify) {
-            notifyHandshakeCompletedListeners();
-        }
-    }
-
-16. AbstractConscryptSocket.java
-    final void notifyHandshakeCompletedListeners() {
-        if (listeners != null && !listeners.isEmpty()) {
-            // notify the listeners
-            HandshakeCompletedEvent event = new HandshakeCompletedEvent(this, getActiveSession());
-            for (HandshakeCompletedListener listener : listeners) {
-                try {
-                    listener.handshakeCompleted(event);
-                } catch (RuntimeException e) {
-                    // The RI runs the handlers in a separate thread,
-                    // which we do not. But we try to preserve their
-                    // behavior of logging a problem and not killing
-                    // the handshaking thread just because a listener
-                    // has a problem.
-                    Thread thread = Thread.currentThread();
-                    thread.getUncaughtExceptionHandler().uncaughtException(thread, e);
-                }
-            }
-        }
-    }
-
-5. SSLCertificateSocketFactory
-SSLCertificateSocketFactory.setUseSessionTickets(...)
-
-https://developer.android.com/reference/android/net/SSLCertificateSocketFactory.html#setUseSessionTickets(java.net.Socket,%20boolean)
-
+```
 
 ## Reference
 
-[](https://source.android.google.cn/devices/architecture/modular-system/conscrypt)
+[Conscrypt](https://source.android.google.cn/devices/architecture/modular-system/conscrypt)
