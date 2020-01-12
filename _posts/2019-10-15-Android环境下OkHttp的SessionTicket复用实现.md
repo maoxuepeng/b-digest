@@ -4,7 +4,7 @@ title: Android环境下OkHttp的SessionTicket复用实现
 tags: SSL Session-Resumption SessionTicket OkHttp Android
 ---
 
-在文章[SSL Handshake Session Resumption](2019/10/10/SSL-Handshake-Session-Resumption.html)中介绍了SessionTicket的复用技术原理，从中我们得知SessionTicket复用是在客户端缓存的SessionTicket，服务端只是验证客户端传过去的SessionTicket是否有效，因此不同的客户端实现库，对SessionTicket的缓存机制有差异。本文介绍Android系统上OKHttp客户端的SessionTicket缓存实现。<!--more-->
+在文章[SSL Handshake Session Resumption](/2019/10/10/SSL-Handshake-Session-Resumption.html)中介绍了SessionTicket的复用技术原理，从中我们得知SessionTicket复用是在客户端缓存的SessionTicket，服务端只是验证客户端传过去的SessionTicket是否有效，因此不同的客户端实现库，对SessionTicket的缓存机制有差异。本文介绍Android系统上OKHttp客户端的SessionTicket缓存实现。<!--more-->
 
 ## 概述
 
@@ -269,7 +269,9 @@ public final void startHandshake() throws IOException {
     }
 ```
 
-### 6. 保存session时候，只有multi-use的session才会存储到文件，single-use的session只存储到内存
+### 6. ClientSessionContext.java
+
+保存session时候，只有multi-use的session才会存储到文件，single-use的session只存储到内存
 
 ```java
     @Override
@@ -293,13 +295,76 @@ public final void startHandshake() throws IOException {
     }
 ```
 
-### 7. 判断session是single use还是multi use在org.conscrypt.NativeSslSession中
+### 7. FileClientSessionCache.java
+
+持久化存储，一个 FileClientSessionCache 对应一个目录，最多存储 **12** 个SessionTicket，超过之后按照 LRU 算法删除一个。
 
 ```java
+/**
+ * File-based cache implementation. Only one process should access the
+ * underlying directory at a time.
+ */
+@Internal
+public final class FileClientSessionCache {
+    private static final Logger logger = Logger.getLogger(FileClientSessionCache.class.getName());
+
+    public static final int MAX_SIZE = 12; // ~72k
+...
         @Override
-        boolean isSingleUse() {
-            return NativeCrypto.SSL_SESSION_should_be_single_use(ref.address);
+        public synchronized void putSessionData(SSLSession session, byte[] sessionData) {
+            String host = session.getPeerHost();
+            if (sessionData == null) {
+                throw new NullPointerException("sessionData == null");
+            }
+
+            String name = fileName(host, session.getPeerPort());
+            File file = new File(directory, name);
+
+            // Used to keep track of whether or not we're expanding the cache.
+            boolean existedBefore = file.exists();
+
+            FileOutputStream out;
+            try {
+                out = new FileOutputStream(file);
+            } catch (FileNotFoundException e) {
+                // We can't write to the file.
+                logWriteError(host, file, e);
+                return;
+            }
+
+            // If we expanded the cache (by creating a new file)...
+            if (!existedBefore) {
+                size++;
+
+                // Delete an old file if necessary.
+                makeRoom();
+            }
+
+            boolean writeSuccessful = false;
+            try {
+                out.write(sessionData);
+                writeSuccessful = true;
+            } catch (IOException e) {
+                logWriteError(host, file, e);
+            } finally {
+                boolean closeSuccessful = false;
+                try {
+                    out.close();
+                    closeSuccessful = true;
+                } catch (IOException e) {
+                    logWriteError(host, file, e);
+                } finally {
+                    if (!writeSuccessful || !closeSuccessful) {
+                        // Storage failed. Clean up.
+                        delete(file);
+                    } else {
+                        // Success!
+                        accessOrder.put(name, file);
+                    }
+                }
+            }
         }
+...
 ```
 
 ## Reference
