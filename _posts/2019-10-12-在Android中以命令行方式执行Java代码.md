@@ -14,3 +14,7 @@ published: false
 [Android dx tool](https://stackoverflow.com/questions/8487268/android-dx-tool)
 
 [Running android java based command-line utility from adb shell [duplicate]](https://stackoverflow.com/questions/21757935/running-android-java-based-command-line-utility-from-adb-shell)
+
+[introducing-scrcpy](https://blog.rom1v.com/2018/03/introducing-scrcpy/)
+
+[vysor的实现原理是什么？](https://www.zhihu.com/question/46229570)
