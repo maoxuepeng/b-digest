@@ -65,7 +65,7 @@ title: 云服务映射
 
 #### 轻量应用服务器 Virtual Private Server
 
-- huawei cloud: No
+- huawei cloud: [云耀云服务器](https://support.huaweicloud.com/productdesc-hecs/hecs_01_0001.html)
 - aliyun: [轻量应用服务器](https://www.aliyun.com/product/swas), [Web应用托管服务（Web+）](https://webplus.console.aliyun.com)
 - tencent cloud: No
 - aws: [Amazon Lightsail](https://aws.amazon.com/lightsail/)
