@@ -5,6 +5,8 @@ tags: ffmpeg android
 published: true
 ---
 
+编译Android版本的FFMpeg库。
+
 <!--more-->
 
 ## 编译步骤
@@ -63,6 +65,7 @@ export STRIP=$target_host-strip
 export CFLAGS="-fPIE -fPIC"
 export LDFLAGS="-pie"
 export ADDI_CFLAGS="-I${X264_HOME}/include"
+export EXTRA_CFLAGS="-mfloat-abi=softfp -mfpu=neon"
 
 ./configure \
     --prefix=${PREFIX} \
