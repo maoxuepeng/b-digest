@@ -15,7 +15,7 @@ header:
       ko      : &KO       
       ko-KR   : *KO
     url: /csm.html  
-header:
+
   - titles:
       en      : &EN       Game
       en-GB   : *EN
@@ -32,7 +32,7 @@ header:
       ko      : &KO       
       ko-KR   : *KO
     url: /game.html
-header:
+
   - titles:
       en      : &EN       Security
       en-GB   : *EN
