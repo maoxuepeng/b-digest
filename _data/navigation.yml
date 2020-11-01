@@ -34,6 +34,23 @@ header:
     url: /game.html
 
   - titles:
+      en      : &EN       SmartCity
+      en-GB   : *EN
+      en-US   : *EN
+      en-CA   : *EN
+      en-AU   : *EN
+      zh-Hans : &ZH_HANS  智慧城市
+      zh      : *ZH_HANS
+      zh-CN   : *ZH_HANS
+      zh-SG   : *ZH_HANS
+      zh-Hant : &ZH_HANT  智慧城市
+      zh-TW   : *ZH_HANT
+      zh-HK   : *ZH_HANT
+      ko      : &KO       
+      ko-KR   : *KO
+    url: /smartcity.html    
+
+  - titles:
       en      : &EN       Security
       en-GB   : *EN
       en-US   : *EN
