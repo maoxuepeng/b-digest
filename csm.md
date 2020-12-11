@@ -376,6 +376,17 @@ Provides Source Network Address Translation (SNAT) and Destination Network Addre
 
 ## 数据库
 
+数据库按照使用场景，可以分为8类，每一类都有典型的产品对应，云数据库也对标这8个分类。
+
+- 关系数据库: MySQL, PostgreSQL, Oracle
+- Key-Value: Cassandra
+- 宽表: AWS KeySpace
+- 文档数据库: MongoDB
+- 内存数据库: Redis, Memcache
+- 图数据库: Neo4j
+- 时序数据库: InfluxDB, RRDtool
+- 分类账: AWS QLDB
+
 ### 关系数据库 MySQL Relation Database MySQL
 
 - huawei cloud: [云数据库 MySQL](https://www.huaweicloud.com/product/mysql.html)
