@@ -49,8 +49,50 @@ title: 智慧城市解决方案
 
 [新型智慧城市发展与实践研究报告](http://caicp.org.cn/cyzx/cyzxtp/201803/P020180522415615425465.pdf)
 
+[信通院-全球数字治理白皮书2020](http://www.caict.ac.cn/kxyj/qwfb/bps/202012/P020201215465405492157.pdf)
+
 ## 政策&法规
 
 [杭州城市大脑赋能城市治理促进条例（草案）](https://z.hangzhou.com.cn/2020/rddesjchy/content/content_7801892.html)
 
 ## 资源
+
+### 数据开放
+
+#### 中国
+
+2015年国务院印发的《促进⼤数据发展⾏动纲要》，要求“2018年底前建成国家政府数据统⼀开放平台，率先在信⽤、交通、医疗、卫⽣、就业、社保、地理、⽂化、教育、科技、资源、农业、环境、安监、⾦融、质量、统计、⽓象、海洋、企业登记监管等重要领域实现公共数据资源合理适度向社会开放”，截⽌2019年，已经有50多个地市开放了平台，开放了约15个领域数据，包括教育科技、⺠⽣服务、道路交通、健康卫⽣、资源环境、⽂化休闲、机构团体、公共安全、经济发展、农业农村、社会保障、劳动就业、企业服务、城市建设、地图服务。 同时，研究显示，中国开放政府数据实践存在六个⽅⾯的主 要问题：数据量少、价值低、可机读⽐例低，开放的多为静态数据，数据授权协议条款含糊，缺乏便捷的数据获取 渠道，缺乏⾼质量的数据应⽤，缺乏便捷、及时、有效、公开的互动交流。最后基于研究的评估结果，为中国开放 政府数据的发展提出了政策建议。
+
+- [国家数据](https://data.stats.gov.cn/) ，国家统计局的官方数据开放平台，这个平台居然没有购买证书，这么穷么。
+- [上海市公共数据开放平台](https://data.sh.gov.cn/) ，比国家统计局的做的好多了，还提供[沙箱环境](https://data.sh.gov.cn/view/sandbox/index.html)用于安全地消费数据。
+- [新加坡国家数据开放平台](https://data.gov.sg/) ，数据很新，更新及时。
+
+#### 欧洲
+
+[EUROPEAN-DATA-PORTAL](https://www.europeandataportal.eu/en)
+
+#### 印度
+
+[India-Smart-Cities](https://smartcities.data.gov.in/)
+
+### 参考
+
+[最全的中国开放数据(open data)及政府数据开放平台汇总](http://www.tanmer.com/blog/451)
+
+[信通院-城市大数据白皮书](http://www.caict.ac.cn/kxyj/qwfb/bps/201906/P020190604489340368704.pdf)
+
+[geojson可视化](https://openlayers.org/)
+
+[Major Smart Cities with Open Data (updated 2019)](https://rlist.io/l/major-smart-cities-with-open-data-portals)
+
+[CityPulse-Dataset-Collection](http://iot.ee.surrey.ac.uk:8080/datasets.html)
+
+## 城市仿真
+
+[City Bench: A Configurable Benchmark to Evaluate RSP Engines Using Smart City Datasets](https://link.springer.com/content/pdf/10.1007%2F978-3-319-25010-6_25.pdf)
+
+[W3C Semantic Modelling of Smart City Data](https://www.w3.org/2014/02/wot/papers/karapantelakis.pdf)
+
+[Semantic Modeling of Smart City Data](https://www.w3.org/2014/02/wot/slides/mileo.pdf)
+
+[信通院-数字孪生城市白皮书-2020](http://www.caict.ac.cn/kxyj/qwfb/bps/202012/P020201217506214048036.pdf)
