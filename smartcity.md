@@ -65,6 +65,7 @@ title: 智慧城市解决方案
 
 - [国家数据](https://data.stats.gov.cn/) ，国家统计局的官方数据开放平台，这个平台居然没有购买证书，这么穷么。
 - [上海市公共数据开放平台](https://data.sh.gov.cn/) ，比国家统计局的做的好多了，还提供[沙箱环境](https://data.sh.gov.cn/view/sandbox/index.html)用于安全地消费数据。
+- [国家青藏高原科学数据中心](https://data.tpdc.ac.cn/zh-hans/)，空间数据，如[降水](https://data.tpdc.ac.cn/zh-hans/data/faae7605-a0f2-4d18-b28f-5cee413766a2/)等。
 - [新加坡国家数据开放平台](https://data.gov.sg/) ，数据很新，更新及时。
 
 #### 欧洲
