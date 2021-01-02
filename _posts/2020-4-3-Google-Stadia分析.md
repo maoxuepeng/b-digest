@@ -1,7 +1,7 @@
 ---
 key: 20200403
 title: Google Stadia 分析
-tags: 云游戏 CloudGaming Stadia
+tags: 游戏 云游戏 CloudGaming Stadia
 ---
 
 本文从产品功能，技术实现，基础设施等方面分析Google Stadia云游戏。<!--more-->
@@ -171,20 +171,24 @@ Stadia 场景下WebRTC架构
 
 ![](/images/stadia/stadia-streamer-2.png)
 
-Stadia场景下WebRTC修改点（对外接口未发生变化）
+#### Stadia场景下WebRTC修改点（对外接口未发生变化）
 
 1. 音视频采集由摄像头、麦克风变为GPU、声卡
 2. Codec采用VP9编码
 3. 增加Rate Adaptation，协同编码与传输
 4. 支持C/S模式
 5. 传输协议使用QUIC替换
-6. 为什么谷歌选择WebRTC
-   - 游戏免安装，通过Chrome即可玩，支撑云游戏跨终端推广目标
-   - WebRTC定位是超低时延(half-second)实时音视频流传输协议
-   - 增强WebRTC生态
-7.  为什么需要WebRTC Over QUIC
-    - 简化WebRTC协议栈
-    - QUIC优势：零RTT建链、改进的拥塞控制、多路复用、连接迁移、前向冗余纠错
+
+#### 为什么谷歌选择WebRTC
+
+- 游戏免安装，通过Chrome即可玩，支撑云游戏跨终端推广目标
+- WebRTC定位是超低时延(half-second)实时音视频流传输协议
+- 增强WebRTC生态
+
+#### 为什么需要WebRTC Over QUIC
+
+- 简化WebRTC协议栈
+- QUIC优势：零RTT建链、改进的拥塞控制、多路复用、连接迁移、前向冗余纠错
 
 ### Stadia GameBus：原生云游戏引擎
 
