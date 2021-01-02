@@ -1,5 +1,5 @@
 ---
-key: 2020818
+key: 20200818
 title: Android动态库Hook技术应用
 tags: Android Hook
 published: false

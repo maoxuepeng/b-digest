@@ -1,7 +1,7 @@
 ---
-key: 20200401
-title: 业界云游戏厂商对比
-tags: 云游戏 CloudGaming
+key: 20200403
+title: Google Stadia 分析
+tags: 云游戏 CloudGaming Stadia
 ---
 
 本文从产品功能，技术实现，基础设施等方面分析Google Stadia云游戏。<!--more-->
