@@ -1,7 +1,7 @@
 ---
 key: 20200415
 title: GameAnywhere代码结构
-tags: GameAnywhere 云游戏
+tags: 游戏 GameAnywhere 云游戏
 published: true
 ---
 
