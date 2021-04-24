@@ -39,10 +39,20 @@ title: 智慧城市解决方案
 
 《GB/T 36620-2018  面向智慧城市的物联网技术应用指南》
 
+## 行业标准
+
+### 电子证照标准
+
+[电子证照 总体规范](http://zfsg.gd.gov.cn/attachment/0/369/369575/2534832.pdf)
+
+[电子证照 共享服务接口规范](http://www.echinagov.com/info/242780)
+
 ## 主要玩家与产品
 
 [全球智慧城市精选案例集](http://www.ccwresearch.com.cn/zhcs/3europe.pdf)
+
 [全球智慧城市精选案例集-目录](/archives/smartcity/cases/全球智慧城市精选案例集-目录.doc)
+
 [中国智慧城市建设最新实践案例集](https://item.jd.com/11901282.html)
 
 ## 行业报告

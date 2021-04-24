@@ -1,7 +1,7 @@
 ---
 key: 20200405
 title: Microsoft Project XCloud 分析
-tags: 云游戏 CloudGaming XCloud
+tags: 游戏 云游戏 CloudGaming XCloud
 ---
 
 本文从产品功能，技术实现，基础设施等方面分析Microsoft Project XCloud。<!--more-->
