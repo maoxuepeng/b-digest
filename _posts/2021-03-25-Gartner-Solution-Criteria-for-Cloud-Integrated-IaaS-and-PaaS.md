@@ -1,6 +1,6 @@
 ---
 key: 20210325
-title: Gartner: Solution Criteria for Cloud Integrated IaaS and PaaS
+title: Gartner Solution Criteria for Cloud Integrated IaaS and PaaS
 tags: Gartner Cloud Criteria
 published: true
 ---
