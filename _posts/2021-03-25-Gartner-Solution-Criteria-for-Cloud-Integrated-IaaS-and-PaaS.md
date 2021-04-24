@@ -2,7 +2,7 @@
 key: 20210325
 title: Gartner: Solution Criteria for Cloud Integrated IaaS and PaaS
 tags: Gartner Cloud Criteria
-published: false
+published: true
 ---
 
 [Solution Criteria for Cloud Integrated IaaS and PaaS](https://www.gartner.com/en/documents/3982143/solution-criteria-for-cloud-integrated-iaas-and-paas) 是Gartner云厂商魔力象限报告的打分评估模型。<!--more-->
