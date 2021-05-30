@@ -2,7 +2,6 @@
 key: 20210529
 title: CNCF Cloud Native Security Whitepaper 2020
 tags: CNCF Security
-published: false
 ---
 
 2020年11月，[CNCF安全SIG发布](https://www.cncf.io/blog/2020/11/18/announcing-the-cloud-native-security-white-paper/)了《[云原生安全白皮书](https://github.com/cncf/tag-security/blob/main/security-whitepaper/CNCF_cloud-native-security-whitepaper-Nov2020.pdf)》，在白皮书中给出了云原生应用生命周期各个阶段的安全建议。本文做一个简要解读。<!--more-->
