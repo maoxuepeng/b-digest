@@ -2,7 +2,6 @@
 key: 20210529
 title: WebAssembly – Where is it going?
 tags: WebAssembly WASI WASM
-published: false
 ---
 
 "WebAssembly is a safe, portable, low-level code format designed for efficient execution and compact representation" – [W3C](https://www.w3.org/TR/wasm-core-1/#introduction%E2%91%A2).
