@@ -75,7 +75,6 @@ published: true
 **观点**
 Backstage，就是对应[平台工程产品团队](#平台工程产品团队)所需要的支撑工具。此项目还是[CFCF孵化项目](https://www.cncf.io/sandbox-projects/)，需要关注。
 
-
 ### 用Kafka API而非Kafka
 
 ```html
