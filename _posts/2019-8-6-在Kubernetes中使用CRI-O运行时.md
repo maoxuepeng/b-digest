@@ -4,7 +4,7 @@ title: 在Kubernetes中使用CRI-O运行时
 tags: Kubernetes CRI-O Runtime
 ---
 
-在[容器实践线路图]()中介绍了容器技术选型，关于容器运行时，提到了CRI规范与CRI-O实现，使用CRI-O可以在运行时完全替代docker。CRI-O提供了crictl工具，类似docker client，可以pull镜像、ps容器进程、attach到容器进程内等等，除了build与tag/push镜像没提供之外，其他都有了。至于为何不提供镜像build/tag/push操作，[官方解释是crictl不是替代docker](https://github.com/kubernetes-sigs/cri-tools/issues/438)，呵呵。
+在[容器实践线路图](https://best.practices.cloud/2019/07/20/%E5%AE%B9%E5%99%A8%E5%AE%9E%E8%B7%B5%E8%B7%AF%E7%BA%BF%E5%9B%BE.html)中介绍了容器技术选型，关于容器运行时，提到了CRI规范与CRI-O实现，使用CRI-O可以在运行时完全替代docker。CRI-O提供了crictl工具，类似docker client，可以pull镜像、ps容器进程、attach到容器进程内等等，除了build与tag/push镜像没提供之外，其他都有了。至于为何不提供镜像build/tag/push操作，[官方解释是crictl不是替代docker](https://github.com/kubernetes-sigs/cri-tools/issues/438)，呵呵。
 本文介绍如何使用CRI-O运行时替换docker运行时，基于CRI-O对接Kubernetes编排。本文所有环境都基于 CentOS7.6 操作系统，内核版本为 3.10.0-957.21.3.el7.x86_64 。 <!--more-->
 
 ## 1. 安装CRI-O
