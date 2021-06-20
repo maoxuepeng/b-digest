@@ -4,7 +4,7 @@ title: CNCF 软件供应链安全白皮书
 tags: CNCF Security Supply-Chain
 ---
 
-软件的供应链安全是软件安全威胁的源头，在[CNCF安全白皮书]()中，软件供应链安全也占据了重要的一部分。[美国联邦政府国家数字安全能力提升行政令](https://www.whitehouse.gov/briefing-room/presidential-actions/2021/05/12/executive-order-on-improving-the-nations-cybersecurity/)中也提别提到软件供应量的安全策略。基于上述背景，CNCF提出了[软件供应链安全最佳实践白皮书](https://github.com/cncf/tag-security/blob/main/supply-chain-security/supply-chain-security-paper/CNCF_SSCP_v1.pdf)。<!--more-->
+软件的供应链安全是软件安全威胁的源头，在[CNCF安全白皮书](https://github.com/cncf/tag-security/blob/main/security-whitepaper/CNCF_cloud-native-security-whitepaper-Nov2020.pdf)中，软件供应链安全也占据了重要的一部分。[美国联邦政府国家数字安全能力提升行政令](https://www.whitehouse.gov/briefing-room/presidential-actions/2021/05/12/executive-order-on-improving-the-nations-cybersecurity/)中也提别提到软件供应量的安全策略。基于上述背景，CNCF提出了[软件供应链安全最佳实践白皮书](https://github.com/cncf/tag-security/blob/main/supply-chain-security/supply-chain-security-paper/CNCF_SSCP_v1.pdf)。<!--more-->
 
 ![](/images/software-supply-chain/2caad364f0eff4d34a4f1d14b53d6746.png)
 
