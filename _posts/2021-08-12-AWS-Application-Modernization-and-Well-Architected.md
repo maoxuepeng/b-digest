@@ -2,6 +2,7 @@
 key: 20210812
 title: AWS Application Modernization and Well Architected
 tags: Cloud AWS Application-Modernization
+published: false
 ---
 
 AWS Application Modernization 是一套方法论，指导遗留应用(Legacy Application)(包含人员/流程)、如何迁移到AWS([Migrate to AWS](https://aws.amazon.com/cloud-migration/))，实现应用现代化。
