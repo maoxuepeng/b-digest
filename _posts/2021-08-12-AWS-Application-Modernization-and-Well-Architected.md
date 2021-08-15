@@ -28,6 +28,8 @@ AWS 客户技术团队（解决方案架构师、专业服务顾问、企业客�
 
 ## AWS 应用现代化
 
+### 是什么
+
 AWS Application Modernization 是一套方法论，指导遗留应用(Legacy Application)(包含人员/流程)、如何迁移到AWS([Migrate to AWS](https://aws.amazon.com/cloud-migration/))，实现应用现代化。
 应用现代化方法论中，包含经典微服务改造的方法论。
 
@@ -37,6 +39,9 @@ AWS Application Modernization 是一套方法论，指导遗留应用(Legacy App
 2. 用户增长
 3. 保护已有投资
 
+### 理论支撑
+
+AWS 应用现代化与AWS提出的应用迁移到云的[6R理论](https://docs.aws.amazon.com/whitepapers/latest/aws-migration-whitepaper/the-6-rs-6-application-migration-strategies.html)是相对应的。既然应用现代化就是应用迁移到AWS上，理论支撑也就是[AWS云迁移白皮书](https://docs.aws.amazon.com/whitepapers/latest/aws-migration-whitepaper/welcome.html)。
 
 ## 两者对比
 
