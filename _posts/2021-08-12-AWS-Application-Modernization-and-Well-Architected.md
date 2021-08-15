@@ -45,22 +45,22 @@ AWS 应用现代化与AWS提出的应用迁移到云的[6R理论](https://docs.a
 
 ## 两者对比
 
-1. 是什么
+### 1. 是什么
 
 - 应用现代化：应用迁移到AWS并获得相应价值的一套方法论。
 - 架构完善：应用托管在AWS上的架构最佳实践，是一套规则集合。还配套了AWS Audit Manager服务的[架构完善框架](https://docs.aws.amazon.com/audit-manager/latest/userguide/well-architected.html)，帮助客户持续审计架构是否符合AWS最佳实践。
 
-2. 受众
+### 2. 受众
 
 - 应用现代化：管理者，通常是CXO。
 - 架构完善：技术人员，架构师、开发者。
 
-3. 价值
+### 3. 价值
 
 - 应用现代化：降低TCO、用户正常、保护已有投资。
 - 架构完善：在AWS上构建```安全、高可靠、低成本、自动化运维```的应用架构。
 
-4. 落地方式
+### 4. 落地方式
 
 - 应用现代化：方法论、或专家咨询服务。
 - 架构完善：技术白皮书 + [评估工具](https://aws.amazon.com/cn/well-architected-tool/) + 行业应用实践（AWS 架构完善的剖析） + 自动化持续评估服务（Audit Manager 架构完善框架）。
