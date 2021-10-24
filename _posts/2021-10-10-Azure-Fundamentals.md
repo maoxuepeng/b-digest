@@ -50,7 +50,7 @@ Azure 组织与账号关系，Azure EA提供组织管理功能，Azure AD提供�
 - 企业邀请外部人员参与业务：企业可以邀请Microsoft Account的人员加入企业，参与到业务流程中。但是企业不能管理此账号，包括更改密码等。这种账号称为```Guest账号```。
 - Azure AD B2C：Azure AD B2C是一个Azure服务，允许用户使用Microsoft Account作为认证源，访问企业应用。类似IDaaS服务。
 
-![Azure B2C](/images/azure/AADB2C.PNG)
+![Azure B2C](/images/azure/AADB2C.png)
 
 ### Microsoft Account使用Azure服务时最佳实践
 
