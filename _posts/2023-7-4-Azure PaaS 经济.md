@@ -4,6 +4,10 @@ tags: The Total Economic Impact™ Of Microsoft Azure PaaS
 published: true
 ---
 
+2022年11月，Forrester针对Azure应用服务发布了一份报告，名称为 "The Total Economic Impact™ Of Microsoft Azure PaaS"，从使用者视角总结了Azure应用服务对客户的价值，具备参考性。
+
+![](/images/azure/Forrester-TheTotalEconomicImpactOfMicrosoftAzurePaaS.png)
+
 ## 什么是 Azure PaaS
 
 Azure PaaS 主要是由Azure应用服务组成，包括 App Service, Spring Apps, Logic Apps, Azure Function, Azure API Management, Azure Application Gateway 。 

@@ -45,9 +45,9 @@ AWS Lambda 是作为 AWS Serverless 计算的主力产品在推广，如果要 h
 
 在Twitter上关于这个话题的讨论，有一些观点也是认为Lambda用来host应用程序并不合适：
 
-![](/images/AWS-Prime-Video-Arch2.png)
+![](/images/AWS-Prime-Video-2.png)
 
-![](/images/AWS-Prime-Video-Arch3.png)
+![](/images/AWS-Prime-Video-3.png)
 
 ## Reference
 
