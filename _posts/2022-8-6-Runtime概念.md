@@ -20,3 +20,4 @@ published: true
 [运行时（runtime）是什么意思？应该怎样深入且直观地理解？](https://www.zhihu.com/question/20607178)
 [C++ Runtime and runtime-linking](https://softwareengineering.stackexchange.com/questions/294346/c-runtime-and-runtime-linking)
 [RHOAR-RedHat OpenShift Application Runtimes](https://developers.redhat.com/products/rhoar/overview)
+[Platform as a Runtime](https://www.aviransplace.com/post/platform-as-a-runtime-paar-beyond-platform-engineering)
